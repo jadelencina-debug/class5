@@ -11,7 +11,7 @@ class ProductoBase(BaseModel):
 class ProductoCreate(ProductoBase):
     pass
 
-class ProductoResponse(ProductoBase):
+class ProductoOut(ProductoCreate):
     id: int
 
     class Config:

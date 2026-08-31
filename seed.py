@@ -1,24 +1,32 @@
-from app.database import SessionLocal, engine, Base
-from app.models import Producto
+from app.database import SessionLocal
+from app.models import Producto, ItemPedido, Pedido
 
-# Create tables just in case
-Base.metadata.create_all(bind=engine)
+def seed():
+    db = SessionLocal()
+    try:
+        # Limpiar datos anteriores para evitar conflictos de claves foráneas
+        db.query(ItemPedido).delete()
+        db.query(Pedido).delete()
+        db.query(Producto).delete()
+        db.commit()
 
-db = SessionLocal()
+        # Nuevos productos solicitados en 3 cuotas
+        productos = [
+            Producto(nombre="Hamburguesa", precio_final=9500.0, cuotas_cantidad=3, cuotas_valor=round(9500.0/3, 2), garantia_meses=0, stock=15),
+            Producto(nombre="Esponja", precio_final=12500.0, cuotas_cantidad=3, cuotas_valor=round(12500.0/3, 2), garantia_meses=0, stock=15),
+            Producto(nombre="Huevo", precio_final=6000.0, cuotas_cantidad=3, cuotas_valor=round(6000.0/3, 2), garantia_meses=0, stock=15),
+            Producto(nombre="Vela", precio_final=9000.0, cuotas_cantidad=3, cuotas_valor=round(9000.0/3, 2), garantia_meses=0, stock=15),
+            Producto(nombre="Tomate", precio_final=11000.0, cuotas_cantidad=3, cuotas_valor=round(11000.0/3, 2), garantia_meses=0, stock=15)
+        ]
+        
+        db.add_all(productos)
+        db.commit()
+        print("Productos actualizados correctamente.")
+    except Exception as e:
+        print("Error:", e)
+        db.rollback()
+    finally:
+        db.close()
 
-# Check if there are any products
-if db.query(Producto).count() == 0:
-    print("Database is empty. Adding dummy products...")
-    productos = [
-        Producto(nombre="Laptop Gamer", precio_final=1200.50, cuotas_cantidad=12, cuotas_valor=100.04, garantia_meses=24, stock=10),
-        Producto(nombre="Monitor 144hz", precio_final=300.00, cuotas_cantidad=6, cuotas_valor=50.00, garantia_meses=12, stock=5),
-        Producto(nombre="Teclado Mecánico", precio_final=80.00, cuotas_cantidad=3, cuotas_valor=26.66, garantia_meses=6, stock=20),
-        Producto(nombre="Mouse Inalámbrico", precio_final=45.00, cuotas_cantidad=1, cuotas_valor=45.00, garantia_meses=12, stock=15)
-    ]
-    db.add_all(productos)
-    db.commit()
-    print("Products added successfully!")
-else:
-    print("Database already has products.")
-
-db.close()
+if __name__ == "__main__":
+    seed()
