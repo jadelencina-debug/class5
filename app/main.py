@@ -4,17 +4,17 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app import models, schemas
-
+from app.core.config import settings
 from app.database import engine, get_db
 
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title=settings.PROJECT_NAME)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

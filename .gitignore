@@ -1,0 +1,13 @@
+# Variables de entorno (nunca subir al repositorio)
+.env
+
+# Entornos virtuales
+venv/
+.venv/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Base de datos local
+*.db
